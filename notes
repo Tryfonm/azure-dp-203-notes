@@ -1,1 +1,65 @@
-for hierarchies : [ManagerEmployeeKey] [INT] NULL
+For hierarchies in table :
+- [ManagerEmployeeKey] [INT] NULL
+
+optimized delete from a partition with clustered columnstore index:
+1. Create empty table TABLE_COPY with same schema
+2. Switch the partition
+3. Drop the table
+
+Parquet: column-oriented binary file format
+Avro: row-based json format, that has logical type timestamp
+
+Gen2 storage strucutre:
+- /{SubjectArea}/{DataSource}/YYYY/MM/DD/FileData_YYYY_MM_DD.csv
+
+fact  -> hash / clustered columnstore index
+dim   -> replicated (if tables are large go with hash)
+stage -> round-robin / no-partition
+
+stage-table -> round-robin / heap / no-partition
+
+storage tiers:
+- hot:
+- cool:
+- archive:
+
+CREATE TABLE table1
+(
+  ID INTEGER,
+  col1 VARCHAR(10),
+  col2 VARCHAR(10)
+) WITH
+(
+  DISTRIBUTION = HASH(ID)
+  PARTITION (ID RANGE LEFT FOR VALUES (1, 1000000, 2000000)
+);
+
+Give access to Gen2 for Synapse serverless SQL:
+- Create an external data source
+- Create an external File format object
+- Create an external table
+
+SC type_0:
+SC type_1:
+SC type_2: requires `effective_start_date`, `effective_end_date`, `surrogate_key`  # double check
+
+Indexes:
+- clustered columnstore index (edfault): highest data compression and overall query performance for large tables
+    - not good for temporary / stage tables
+    - not good for small tables
+- heap: transient data / stage tables
+- clustered and nonclustered indexes: fast when one row or a few rows need to be retrieved
+    - queries that benefit are the ones that use a highly selective filter on the clustered index column
+    e.g. WITH ( CLUSTERED INDEX (id) );
+
+SWITCH <source> TO <target>
+
+NOTES:
+- When moving from databaseto to datawarehouse (dimensional model) -> denormalize
+- NEVER hash on date
+
+CHECK:
+question 37
+
+LEFT at:
+
