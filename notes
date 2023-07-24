@@ -6,7 +6,9 @@ optimized delete from a partition with clustered columnstore index:
 2. Switch the partition
 3. Drop the table
 
-Parquet: column-oriented binary file format
+Parquet:
+  - column-oriented binary file format
+  - automatic statistics are turned on by default
 Avro: row-based json format, that has logical type timestamp
 
 Gen2 storage strucutre:
@@ -18,7 +20,9 @@ stage -> round-robin / no-partition
 
 stage-table -> round-robin / heap / no-partition
 
-storage tiers:
+redundancy: <-----
+
+storage tiers: <-----
 - hot:
 - cool:
 - archive:
@@ -39,9 +43,18 @@ Give access to Gen2 for Synapse serverless SQL:
 - Create an external File format object
 - Create an external table
 
+Windows:
+- Tumbling
+- Hopping
+- Sliding
+- Tumbling
+...
+
+
 SC type_0:
 SC type_1:
 SC type_2: requires `effective_start_date`, `effective_end_date`, `surrogate_key`  # double check
+SC type_3: 
 
 Indexes:
 - clustered columnstore index (edfault): highest data compression and overall query performance for large tables
@@ -54,12 +67,39 @@ Indexes:
 
 SWITCH <source> TO <target>
 
+`Auto Loader` provides a structured streaming source called cloudfiles; it also supports schema drift
+
+`Query Acceleration` supports .csv and .json
+
+`Azure Event Grids`: event-driven publish-subscribe model (reactive programming)
+`Azure Event Hubs`: multiple source big data streaming pipeline
+
+Databricks:
+- high concurrency:
+- automated:
+- interactive:
+
 NOTES:
 - When moving from databaseto to datawarehouse (dimensional model) -> denormalize
 - NEVER hash on date
+- Folder/Files with prefi `.*`, `_*` are ignored when reading in synapse as external data source
+- Maximized compression -> ALTER INDEX ALL on table1 REBUILD
+- `Annotations` are additional informative tags that you can add to specific resources: pipelines,datasets, linked service, triggers.
+	They can then be used for filtering the resources
+
+
 
 CHECK:
-question 37
+#37
+#62
+#78
+#88
+#p10q5
+#p10q10
+
+
+SOS:
+#p10q7
 
 LEFT at:
 
